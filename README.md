@@ -163,7 +163,7 @@ Buka browser dan akses: **`http://localhost:5173`**
 | **MissingAppKeyException** | Jalankan `php artisan key:generate` di folder `presensi-backend` |
 | **CORS Error (Access-Control-Allow-Origin)** | Pastikan `bootstrap/app.php` memiliki `$middleware->prepend(HandleCors::class)` |
 | **Error 500 saat Lupa Password** | Di `.env` ubah `MAIL_MAILER=SMTP` agar kode reset password terkirim ke email pengguna asli. |
-| **Foto / Gambar Tidak Muncul** | Jalankan `php artisan storage:link` |
+| **Foto / Gambar Tidak Muncul** | Hal ini wajar karena kami tidak upload gambar gambar riwayat kami, Jalankan `php artisan storage:link` lalu upload foto profile, presensi, dan izin baru |
 | **Grafik Dashboard Kosong** | Pastikan `php artisan schedule:work` berjalan di terminal terpisah |
 | **Port 8000 sudah digunakan** | Jalankan `php artisan serve --port=8001` |
 | **Port 5173 sudah digunakan** | Vite akan otomatis memilih port berikutnya (5174, dst) |
