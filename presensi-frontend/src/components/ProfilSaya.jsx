@@ -8,11 +8,9 @@ import {
     FiAlertCircle
 } from "react-icons/fi";
 
-// IMPORT REACT-IMAGE-CROP
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
-// IMPORT ASSET DEFAULT
 import imgSiswa from "../assets/student.png";
 import imgGuru from "../assets/teacher.png";
 import imgAdmin from "../assets/admin.png";
@@ -21,10 +19,8 @@ export default function ProfilSaya({ switchMenu }) {
     const [profil, setProfil] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // State Form Edit Biodata Diri
     const [bioForm, setBioForm] = useState({ jenis_kelamin: '', alamat_domisili: '' });
 
-    // State Foto Profil & Crop
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef(null);
     const imgRef = useRef(null);
@@ -33,14 +29,12 @@ export default function ProfilSaya({ switchMenu }) {
     const [crop, setCrop] = useState();
     const [completedCrop, setCompletedCrop] = useState(null);
 
-    // State Form Ganti Password
     const [passForm, setPassForm] = useState({ password_lama: '', password_baru: '', konfirmasi: '' });
     const [showPassLama, setShowPassLama] = useState(false);
     const [showPassBaru, setShowPassBaru] = useState(false);
     const [showPassKonfirm, setShowPassKonfirm] = useState(false);
     const [loadingPass, setLoadingPass] = useState(false);
 
-    // State Lupa Password & Modal (HANYA UNTUK NON-ADMIN)
     const [loadingForgot, setLoadingForgot] = useState(false);
     const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
     const [forgotStep, setForgotStep] = useState(1);
@@ -77,9 +71,6 @@ export default function ProfilSaya({ switchMenu }) {
         }
     };
 
-    // =========================================================
-    // HANDLER FOTO PROFIL DENGAN CROP
-    // =========================================================
     const onSelectFile = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             setCrop(undefined); 
@@ -158,9 +149,6 @@ export default function ProfilSaya({ switchMenu }) {
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
-    // =========================================================
-    // HANDLER PASSWORD (Hanya Ganti Password, Bukan Lupa)
-    // =========================================================
     const handlePassChange = (e) => {
         setPassForm({ ...passForm, [e.target.name]: e.target.value });
     };
@@ -190,11 +178,7 @@ export default function ProfilSaya({ switchMenu }) {
         }
     };
 
-    // =========================================================
-    // HANDLER LUPA PASSWORD (HANYA UNTUK NON-ADMIN)
-    // =========================================================
     const handleRequestToken = async () => {
-        // ADMIN TIDAK BISA AKSES FITUR INI
         if (profil?.role === 'admin') {
             toast.error("Admin tidak dapat menggunakan fitur lupa sandi. Gunakan perbarui sandi.");
             return;
@@ -216,7 +200,6 @@ export default function ProfilSaya({ switchMenu }) {
     const submitResetPassword = async (e) => {
         e.preventDefault();
         
-        // ADMIN TIDAK BISA AKSES FITUR INI
         if (profil?.role === 'admin') {
             toast.error("Admin tidak dapat menggunakan fitur reset sandi.");
             return;
@@ -243,7 +226,6 @@ export default function ProfilSaya({ switchMenu }) {
         }
     };
 
-    // HANYA BUKA MODAL LUPA PASSWORD JIKA BUKAN ADMIN
     const openForgotModal = () => { 
         if (profil?.role === 'admin') {
             toast.error("Admin tidak memiliki fitur lupa sandi. Silakan gunakan form perbarui sandi di samping.");
@@ -263,9 +245,6 @@ export default function ProfilSaya({ switchMenu }) {
         setShowForgotConfirmPass(false);
     };
 
-    // =========================================================
-    // FUNGSI NAVIGASI BANTUAN
-    // =========================================================
     const handleBantuanClick = () => {
         if (switchMenu) {
             switchMenu('bantuan');
@@ -274,9 +253,6 @@ export default function ProfilSaya({ switchMenu }) {
         }
     };
 
-    // =========================================================
-    // RENDER UI
-    // =========================================================
     if (loading) return (
         <div className="py-20 flex flex-col items-center justify-center text-blue-500 w-full animate-fadeIn h-full min-h-[400px]">
             <FiUser className="w-12 h-12 animate-pulse mb-5 text-blue-300" />
@@ -299,14 +275,20 @@ export default function ProfilSaya({ switchMenu }) {
     if (isAdmin) userAvatar = imgAdmin;
     else if (isGuru) userAvatar = imgGuru;
     
-    if (detailProfil && detailProfil.foto_url && !detailProfil.foto_url.includes('student.png') && !detailProfil.foto_url.includes('teacher.png')) {
-        userAvatar = detailProfil.foto_url;
+    if (detailProfil?.foto) {
+        userAvatar = `http://localhost:8000/storage/${detailProfil.foto}`;
+    } else if (detailProfil?.foto_url && !detailProfil.foto_url.includes('student.png') && !detailProfil.foto_url.includes('teacher.png')) {
+        let fUrl = detailProfil.foto_url;
+        if (fUrl.startsWith('http')) {
+            userAvatar = fUrl;
+        } else {
+            userAvatar = `http://localhost:8000${fUrl.startsWith('/') ? '' : '/'}${fUrl}`;
+        }
     }
 
     return (
         <div className="w-full flex flex-col animate-fadeIn pb-24 md:pb-10 relative max-w-[1400px] mx-auto">
             
-            {/* MODAL CROP GAMBAR */}
             {cropModalOpen && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-fadeIn">
                     <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col">
@@ -352,7 +334,6 @@ export default function ProfilSaya({ switchMenu }) {
                 </div>
             )}
 
-            {/* HERO BANNER MODERN */}
             <div className="w-full h-auto md:h-32 rounded-2xl overflow-hidden relative shadow-sm border border-slate-200 shrink-0 mb-6 flex flex-col justify-center">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-900/95 via-indigo-900/80 to-slate-900/90 z-10"></div>
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px] z-10"></div>
@@ -365,8 +346,6 @@ export default function ProfilSaya({ switchMenu }) {
                 
                 <div className="relative z-20 flex flex-col md:flex-row justify-between items-start md:items-center w-full p-5 md:p-6 gap-4">
                     <div className="flex items-center gap-4 md:gap-5">
-                        
-                        {/* FOTO PROFIL KIRI ATAS DENGAN FITUR UPLOAD CROP (Kecuali Admin) */}
                         <div className="relative group shrink-0">
                             <div className={`w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 shadow-lg flex items-center justify-center bg-white ${isAdmin ? 'border-lime-400' : isGuru ? 'border-indigo-400' : 'border-blue-400'}`}>
                                 <img src={userAvatar} alt="Avatar" className="w-full h-full object-cover object-center" />
@@ -407,13 +386,9 @@ export default function ProfilSaya({ switchMenu }) {
                 </div>
             </div>
 
-            {/* LAYOUT GRID UTAMA: KIRI (8/12) & KANAN (4/12) */}
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 md:gap-6 items-start">
                 
-                {/* ---------------- KOLOM KIRI (Profil & Akademik) ---------------- */}
                 <div className="xl:col-span-8 flex flex-col gap-4 md:gap-6">
-                    
-                    {/* CARD 1: INFORMASI PERSONAL (READ-ONLY) */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <div className="px-5 md:px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                             <h3 className="font-black text-slate-800 uppercase tracking-widest text-xs flex items-center gap-2">
@@ -447,7 +422,6 @@ export default function ProfilSaya({ switchMenu }) {
                         </div>
                     </div>
 
-                    {/* CARD 2: DATA AKADEMIK + TOMBOL BANTUAN DI BAWAHNYA */}
                     <div className="flex flex-col gap-3">
                         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                             <div className="px-5 md:px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
@@ -489,23 +463,9 @@ export default function ProfilSaya({ switchMenu }) {
                                 )}
                             </div>
                         </div>
-
-                        {/* TOMBOL BANTUAN (HANYA GURU & SISWA) */}
-                        {!isAdmin && (
-                            <div className="flex justify-start px-1 mt-1">
-                                <button 
-                                    onClick={handleBantuanClick}
-                                    className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-all group p-2 rounded-xl hover:bg-blue-50"
-                                >
-                                    <FiAlertCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                                    Ada Kendala? Hubungi Bantuan Admin
-                                </button>
-                            </div>
-                        )}
                     </div>
                 </div>
 
-                {/* ---------------- KOLOM KANAN (Form Ganti Sandi - 4/12) ---------------- */}
                 <div className="xl:col-span-4 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden shrink-0">
                     <div className="px-5 md:px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
                         <div className="p-1.5 bg-rose-100 text-rose-600 rounded-lg"><FiLock className="w-3.5 h-3.5" /></div>
@@ -517,7 +477,6 @@ export default function ProfilSaya({ switchMenu }) {
                     <form onSubmit={submitGantiPassword} className="p-5 md:p-6 flex flex-col gap-4" autoComplete="off">
                         
                         <div>
-                            {/* HANYA TAMPILKAN LINK LUPA SANDI JIKA BUKAN ADMIN */}
                             <div className="flex justify-between items-end mb-1.5">
                                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">Sandi Saat Ini</label>
                                 {!isAdmin && (
@@ -557,7 +516,6 @@ export default function ProfilSaya({ switchMenu }) {
                             </div>
                         </div>
 
-                        {/* GARIS PEMISAH */}
                         <div className="flex items-center gap-3 opacity-50 py-1">
                             <hr className="flex-1 border-dashed border-slate-300" />
                             <FiLock className="text-slate-300 w-3 h-3" />
@@ -621,23 +579,22 @@ export default function ProfilSaya({ switchMenu }) {
                             {loadingPass ? "MEMPROSES..." : "PERBARUI SANDI"}
                         </button>
                     </form>
+
+                    {/* TOMBOL BANTUAN MOBILE SEKARANG TEPAT DI BAWAH FORM KEAMANAN PADA LAYAR KECIL */}
+                    {!isAdmin && (
+                        <div className="xl:hidden flex justify-center w-full px-5 pb-5">
+                            <button 
+                                onClick={handleBantuanClick}
+                                className="w-full inline-flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-all group p-3 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-100"
+                            >
+                                <FiAlertCircle className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
+                                Ada Kendala? Hubungi Bantuan Admin
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* TOMBOL BANTUAN MOBILE */}
-            {!isAdmin && (
-                <div className="xl:hidden flex justify-center w-full mt-6">
-                    <button 
-                        onClick={handleBantuanClick}
-                        className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-all group p-2 rounded-xl hover:bg-blue-50"
-                    >
-                        <FiAlertCircle className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
-                        Ada Kendala? Hubungi Bantuan Admin
-                    </button>
-                </div>
-            )}
-
-            {/* MODAL LUPA KATA SANDI - TIDAK AKAN PERNAH MUNCUL UNTUK ADMIN */}
             {isForgotModalOpen && !isAdmin && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
                     <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all relative flex flex-col">

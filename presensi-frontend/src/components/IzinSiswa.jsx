@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api from "../utils/api";
-import toast from 'react-hot-toast'; // Menggunakan Toast agar seragam
+import toast from 'react-hot-toast'; 
 import { 
     FiFileText, FiSend, FiInfo, 
     FiUploadCloud, FiThermometer, FiBriefcase, 
@@ -92,10 +92,8 @@ export default function IzinSiswa() {
     return (
         <div className="w-full flex flex-col gap-6 animate-fadeIn max-w-[1400px] mx-auto pb-24 md:pb-10 relative xl:min-h-[calc(100vh-100px)]">
             
-            {/* =========================================================
-                HERO BANNER MODERN (Diselaraskan)
-            ========================================================= */}
-            <div className="w-full h-auto md:h-32 rounded-2xl overflow-hidden relative shadow-sm border border-slate-200 group shrink-0 flex flex-col justify-center">
+            {/* HERO BANNER MODERN */}
+            <div className="w-full h-auto md:h-32 rounded-2xl overflow-hidden relative shadow-sm border border-slate-200 group shrink-0 mb-6 flex flex-col justify-center">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-900/95 via-indigo-900/80 to-slate-900/90 z-10"></div>
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px] z-10"></div>
                 <img 
@@ -121,10 +119,6 @@ export default function IzinSiswa() {
             {/* KONTEN UTAMA */}
             <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200">
                 
-                {/* Form dipisah jadi 2 Kolom (Grid) di Laptop 
-                    - Kiri: Kategori + Alasan
-                    - Kanan: Upload + Tombol Submit
-                */}
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
                     
                     {/* KOLOM KIRI (7/12) */}
